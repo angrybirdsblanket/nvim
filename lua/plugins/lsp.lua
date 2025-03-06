@@ -1,4 +1,5 @@
 return {
+  -- Mason for managing external tools
   {
     'williamboman/mason.nvim',
     lazy = false,
@@ -47,7 +48,7 @@ return {
     end,
   },
 
-  -- LSP
+  -- LSP Configuration
   {
     'neovim/nvim-lspconfig',
     cmd = { 'LspInfo', 'LspInstall', 'LspStart' },
@@ -73,7 +74,6 @@ return {
         desc = 'LSP actions',
         callback = function(event)
           local opts = { buffer = event.buf }
-
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -104,6 +104,25 @@ return {
               -- root_dir = require('lspconfig').util.root_pattern('.eslintrc*', 'eslint.config.js', 'package.json'),
             })
           end,
+        },
+      })
+    end,
+  },
+
+  -- Null-ls for additional formatting (e.g. using clang-format for C#)
+  {
+    'jose-elias-alvarez/null-ls.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local null_ls = require('null-ls')
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.clang_format.with({
+            -- Apply clang-format only to C# files; adjust or remove filetypes if you want more languages
+            filetypes = { "cs" },
+            -- extra_args here can override your .clang-format config if needed
+            extra_args = { "--style={BasedOnStyle: Microsoft, BreakBeforeBraces: Attach}" },
+          }),
         },
       })
     end,
