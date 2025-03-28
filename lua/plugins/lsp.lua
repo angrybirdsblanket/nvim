@@ -10,6 +10,13 @@ return {
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-vsnip',
+      'hrsh7th/vim-vsnip'
+    },
     config = function()
       local cmp = require('cmp')
 
@@ -58,10 +65,20 @@ return {
       { 'williamboman/mason.nvim' },
       { 'williamboman/mason-lspconfig.nvim' },
     },
-    init = function()
-      vim.opt.signcolumn = 'yes'
-    end,
     config = function()
+      -- Configure diagnostics appearance
+      vim.diagnostic.config({
+        virtual_text = true,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true,
+      })
+
+      -- Show line diagnostics automatically in hover window
+      vim.o.updatetime = 250
+      vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+
       local lsp_defaults = require('lspconfig').util.default_config
 
       lsp_defaults.capabilities = vim.tbl_deep_extend(
@@ -74,6 +91,8 @@ return {
         desc = 'LSP actions',
         callback = function(event)
           local opts = { buffer = event.buf }
+          
+          -- Keymaps for LSP
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -86,46 +105,46 @@ return {
             vim.lsp.buf.format({ async = true })
           end, opts)
           vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
+          
+          -- Diagnostic keymaps
+          vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+          vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+          vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
         end,
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { "pyright", "clangd", "eslint", "ts_ls", "omnisharp", "rust_analyzer" },
+        ensure_installed = { 
+          "pyright", 
+          "clangd", 
+          "eslint", 
+          "omnisharp", 
+          "rust_analyzer" 
+        },
         handlers = {
-          -- Default handler for all servers except ESLint
+          -- Default handler for all servers
           function(server_name)
             require('lspconfig')[server_name].setup({})
           end,
-          -- Custom handler for ESLint using the local binary with --stdin flag
+          
+          -- Custom handler for OmniSharp
+          ["omnisharp"] = function()
+            require('lspconfig').omnisharp.setup({
+              cmd = { "omnisharp", "--languageserver" },
+              enable_roslyn_analyzers = true,
+              organize_imports_on_format = true,
+              enable_import_completion = true,
+            })
+          end,
+          
+          -- Custom handler for ESLint
           ["eslint"] = function()
             require('lspconfig').eslint.setup({
               cmd = { "pnpm", "eslint", "--stdin" },
-              -- Optionally, set the root directory:
-              -- root_dir = require('lspconfig').util.root_pattern('.eslintrc*', 'eslint.config.js', 'package.json'),
             })
           end,
         },
       })
     end,
   },
-
-  -- Null-ls for additional formatting (e.g. using clang-format for C#)
-  {
-    'jose-elias-alvarez/null-ls.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      local null_ls = require('null-ls')
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.clang_format.with({
-            -- Apply clang-format only to C# files; adjust or remove filetypes if you want more languages
-            filetypes = { "cs" },
-            -- extra_args here can override your .clang-format config if needed
-            extra_args = { "--style={BasedOnStyle: Microsoft, BreakBeforeBraces: Attach}" },
-          }),
-        },
-      })
-    end,
-  },
 }
-
