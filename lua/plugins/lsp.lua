@@ -118,6 +118,7 @@ return {
           "pyright", 
           "clangd", 
           "eslint", 
+          "ts_ls",       -- added for JS/TS support
           "omnisharp", 
           "rust_analyzer" 
         },
@@ -141,6 +142,9 @@ return {
           ["eslint"] = function()
             require('lspconfig').eslint.setup({
               cmd = { "pnpm", "eslint", "--stdin" },
+              flags = {
+                debounce_text_changes = 200,   -- throttle ESLint to 200ms after typing stops
+              },
             })
           end,
         },
@@ -148,3 +152,4 @@ return {
     end,
   },
 }
+

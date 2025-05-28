@@ -21,4 +21,6 @@ vim.keymap.set({"n", 'v'}, "<leader>q", vim.cmd.q)
 vim.keymap.set({"n", "v"}, "<leader><C-w>", vim.cmd.w)
 
 vim.keymap.set({"n", "v"}, "<leader>y", '"+y')
+vim.keymap.set('n', '<leader>cr', ':%s/\\r//g<CR>', { noremap = true, silent = true })
 
+vim.keymap.set({"n", "v"}, "<leader>rd", ":!rider .<CR>")
