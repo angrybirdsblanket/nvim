@@ -19,7 +19,8 @@ return {
           elseif path:match("^" .. home .. "/programming/nyp/y2s1/advanced_programming/assignment%_1/PokemonPocket/PokemonPocket") then
             return "sweating pokemon assignment"
           end
-          return ("Editing %s"):format(vim.fn.fnamemodify(filename, ":t"))
+          local cwd = vim.fn.getcwd()
+          return ("Editing %s"):format(vim.fn.fnamemodify(cwd, ":t"))
         end,
       })
     end,
