@@ -66,7 +66,6 @@ return {
       { 'williamboman/mason-lspconfig.nvim' },
     },
     config = function()
-      -- Configure diagnostics appearance
       vim.diagnostic.config({
         virtual_text = true,
         signs = true,
@@ -75,7 +74,6 @@ return {
         severity_sort = true,
       })
 
-      -- Show line diagnostics automatically in hover window
       vim.o.updatetime = 250
       vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
@@ -91,8 +89,7 @@ return {
         desc = 'LSP actions',
         callback = function(event)
           local opts = { buffer = event.buf }
-          
-          -- Keymaps for LSP
+
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -105,8 +102,7 @@ return {
             vim.lsp.buf.format({ async = true })
           end, opts)
           vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
-          
-          -- Diagnostic keymaps
+
           vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
           vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
           vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -114,21 +110,18 @@ return {
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { 
-          "pyright", 
-          "clangd", 
-          "eslint", 
-          "ts_ls",       -- added for JS/TS support
-          "omnisharp", 
-          "rust_analyzer" 
+        ensure_installed = {
+          "pyright",
+          "eslint",
+          "tsserver",     -- fixed typo from ts_ls to tsserver
+          "omnisharp",
+          "rust_analyzer"
         },
         handlers = {
-          -- Default handler for all servers
           function(server_name)
             require('lspconfig')[server_name].setup({})
           end,
-          
-          -- Custom handler for OmniSharp
+
           ["omnisharp"] = function()
             require('lspconfig').omnisharp.setup({
               cmd = { "omnisharp", "--languageserver" },
@@ -137,13 +130,29 @@ return {
               enable_import_completion = true,
             })
           end,
-          
-          -- Custom handler for ESLint
+
           ["eslint"] = function()
             require('lspconfig').eslint.setup({
               cmd = { "pnpm", "eslint", "--stdin" },
               flags = {
-                debounce_text_changes = 200,   -- throttle ESLint to 200ms after typing stops
+                debounce_text_changes = 200,
+              },
+            })
+          end,
+
+          ["rust_analyzer"] = function()
+            require('lspconfig').rust_analyzer.setup({
+              settings = {
+                ["rust-analyzer"] = {
+                  cargo = {
+                    buildScripts = {
+                      enable = false,
+                    },
+                  },
+                  procMacro = {
+                    enable = false,
+                  },
+                },
               },
             })
           end,
