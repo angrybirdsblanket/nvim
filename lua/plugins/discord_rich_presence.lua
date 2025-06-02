@@ -16,8 +16,8 @@ return {
             return "Initiate!"
           elseif path:match("^" .. home .. "/programming/personal/learning/rust/[^/]+") then
             return "Fighting the bloody borrow checker again"
-          elseif path:match("^" .. home .. "/programming/nyp/y2s1/advanced_programming/assignment%_1/PokemonPocket/PokemonPocket") then
-            return "sweating pokemon assignment"
+          elseif path:match("^" .. home .. "/programming/nyp/y2s1/advanced_programming/assignment%_2/ASN2_Student_Resource/[^/]+") then
+            return "sweating c# assignment"
           end
           local cwd = vim.fn.getcwd()
           return ("Editing %s"):format(vim.fn.fnamemodify(cwd, ":t"))
