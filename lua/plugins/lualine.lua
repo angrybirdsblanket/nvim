@@ -12,7 +12,9 @@ return {
         always_divide_middle = true,
       },
       sections = {
-        lualine_a = { { "mode", icon = "" } }, -- Fancy mode tag (NORMAL, etc.)
+        lualine_a = {
+          { "mode", icon = "" },  -- Arch Linux logo
+        },
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = { "filename" },
         lualine_x = { "encoding", "fileformat", "filetype" },
