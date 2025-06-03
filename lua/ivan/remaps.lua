@@ -24,3 +24,5 @@ vim.keymap.set({"n", "v"}, "<leader>y", '"+y')
 vim.keymap.set('n', '<leader>cr', ':%s/\\r//g<CR>', { noremap = true, silent = true })
 
 vim.keymap.set({"n", "v"}, "<leader>rd", ":!rider .<CR>")
+
+vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle File Tree" })
