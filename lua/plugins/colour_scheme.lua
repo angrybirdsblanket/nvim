@@ -28,6 +28,7 @@ return {
     config = function()
         require("catppuccin").setup({
             flavour = "macchiato", -- Choose your favorite flavor: latte, frappe, macchiato, mocha
+            transparent_background = true, -- Set to true for a transparent background
             integrations = {
                 treesitter = true,
                 lsp_trouble = true,
