@@ -19,16 +19,16 @@
 --     end,
 --   },
 -- }
---
+
 return {
-    "catppuccin/nvim", -- Catppuccin theme
+    "catppuccin/nvim", 
     name = "catppuccin",
-    lazy = false, -- Load immediately
-    priority = 1000, -- Ensure it loads before other plugins
+    lazy = false, 
+    priority = 1000, 
     config = function()
         require("catppuccin").setup({
-            flavour = "macchiato", -- Choose your favorite flavor: latte, frappe, macchiato, mocha
-            transparent_background = true, -- Set to true for a transparent background
+            flavour = "mocha", 
+            transparent_background = true, 
             integrations = {
                 treesitter = true,
                 lsp_trouble = true,
@@ -56,7 +56,6 @@ return {
             },
         })
 
-        -- Apply the colorscheme
         vim.cmd.colorscheme("catppuccin")
     end,
 }

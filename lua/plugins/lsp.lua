@@ -107,7 +107,6 @@ return {
           vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
           
           -- Diagnostic keymaps
-          vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
           vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
           vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
         end,
