@@ -4,20 +4,31 @@ return {
   config = function()
     require("lualine").setup({
       options = {
-        theme = "catppuccin",
-        icons_enabled = true,
-        component_separators = { left = "", right = "" },
-        section_separators = { left = "", right = "" },
-        disabled_filetypes = { statusline = {}, winbar = {} },
-        always_divide_middle = true,
+        theme               = "catppuccin",
+        icons_enabled       = true,
+        component_separators= { left = "", right = "" },
+        section_separators  = { left = "", right = "" },
+        disabled_filetypes  = { statusline = {}, winbar = {} },
+        always_divide_middle= true,
       },
       sections = {
         lualine_a = {
-          { "mode", icon = "" },  -- Arch Linux logo
+          { "mode", icon = "" },
         },
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = { "filename" },
-        lualine_x = { "encoding", "fileformat", "filetype" },
+        lualine_x = {
+          "encoding",
+          "fileformat",
+          "filetype",
+          { 
+            function() 
+              return os.date("%H:%M") 
+            end,
+            icon    = "",
+            padding = { left = 1, right = 1 },
+          },
+        },
         lualine_y = { "progress" },
         lualine_z = { "location" },
       },
