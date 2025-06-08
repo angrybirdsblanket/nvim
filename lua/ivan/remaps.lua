@@ -26,3 +26,22 @@ vim.keymap.set('n', '<leader>cr', ':%s/\\r//g<CR>', { noremap = true, silent = t
 vim.keymap.set({"n", "v"}, "<leader>rd", ":!rider .<CR>")
 
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle File Tree" })
+
+vim.keymap.set("i", "<C-s>", function()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+
+  local seq = vim.api.nvim_replace_termcodes("<Esc>ggVG=", true, false, true)
+  vim.api.nvim_feedkeys(seq, "n", false)
+
+  vim.cmd.write()
+
+  vim.api.nvim_win_set_cursor(0, { row, col })
+
+  local seq = vim.api.nvim_replace_termcodes(":".. row .. "<CR> 0" .. col .. "li", true, false, true)
+  vim.api.nvim_feedkeys(seq, "n", false)
+
+  vim.cmd.startinsert()
+end, { silent = true, desc = "Format buffer and save" })
+
+vim.keymap.set({"n", "v"}, "<leader>fy", 'ggVG"+y', { desc = "Yank file content to clipboard" })
+vim.keymap.set({"n", "v"}, "<leader>fp", 'ggVG"+p', { desc = "Yank file content to clipboard" })
