@@ -45,3 +45,13 @@ end, { silent = true, desc = "Format buffer and save" })
 
 vim.keymap.set({"n", "v"}, "<leader>fy", 'ggVG"+y', { desc = "Yank file content to clipboard" })
 vim.keymap.set({"n", "v"}, "<leader>fp", 'ggVG"+p', { desc = "Yank file content to clipboard" })
+
+vim.keymap.set({"n", "v"}, "<leader>pb",
+function()
+  local branch = get_branch()
+
+  local command = "push " .. branch
+
+  vim.fn.jobstart(command)
+end
+)
