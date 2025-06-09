@@ -46,12 +46,26 @@ end, { silent = true, desc = "Format buffer and save" })
 vim.keymap.set({"n", "v"}, "<leader>fy", 'ggVG"+y', { desc = "Yank file content to clipboard" })
 vim.keymap.set({"n", "v"}, "<leader>fp", 'ggVG"+p', { desc = "Yank file content to clipboard" })
 
-vim.keymap.set({"n", "v"}, "<leader>pb",
-function()
+vim.keymap.set({ "n", "v" }, "<leader>pb", function()
+  local shell  = vim.o.shell               -- e.g. "/usr/bin/zsh"
   local branch = get_branch()
+  if not branch or branch == "" then
+    print("No Git branch detected")
+    return
+  end
+  local cmd = "push " .. branch
 
-  local command = "push " .. branch
-
-  vim.fn.jobstart(command)
-end
-)
+  -- Pass a list: { shell, "-ic", cmd }
+  vim.fn.jobstart({ shell, "-ic", cmd }, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then print(table.concat(data, "\n")) end
+    end,
+    on_stderr = function(_, data)
+      if data then print(table.concat(data, "\n")) end
+    end,
+    on_exit = function(_, code)
+      print(code == 0 and ("Pushed " .. branch) or "Push failed")
+    end,
+  })
+end, { desc = "Push current branch via shell function" })
