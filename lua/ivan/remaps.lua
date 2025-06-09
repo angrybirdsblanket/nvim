@@ -47,25 +47,24 @@ vim.keymap.set({"n", "v"}, "<leader>fy", 'ggVG"+y', { desc = "Yank file content 
 vim.keymap.set({"n", "v"}, "<leader>fp", 'ggVG"+p', { desc = "Yank file content to clipboard" })
 
 vim.keymap.set({ "n", "v" }, "<leader>pb", function()
-  local shell  = vim.o.shell               -- e.g. "/usr/bin/zsh"
   local branch = get_branch()
-  if not branch or branch == "" then
-    print("No Git branch detected")
+  if branch == "" or branch == "HEAD" then
+    vim.notify("Not on a git branch!", vim.log.levels.WARN)
     return
   end
-  local cmd = "push " .. branch
 
-  -- Pass a list: { shell, "-ic", cmd }
-  vim.fn.jobstart({ shell, "-ic", cmd }, {
-    stdout_buffered = true,
-    on_stdout = function(_, data)
-      if data then print(table.concat(data, "\n")) end
-    end,
-    on_stderr = function(_, data)
-      if data then print(table.concat(data, "\n")) end
-    end,
+  -- push directly, no shell functions needed
+  vim.fn.jobstart({ "git", "push", "-u", "origin", branch }, {
+    detach = true,
     on_exit = function(_, code)
-      print(code == 0 and ("Pushed " .. branch) or "Push failed")
+      -- schedule so we don’t call notify from the job thread
+      vim.schedule(function()
+        if code == 0 then
+          vim.notify("Pushed “" .. branch .. "” ✓", vim.log.levels.INFO)
+        else
+          vim.notify("Push failed!", vim.log.levels.ERROR)
+        end
+      end)
     end,
   })
-end, { desc = "Push current branch via shell function" })
+end, { desc = "Push current branch to origin" })
