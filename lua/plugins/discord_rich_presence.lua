@@ -1,4 +1,3 @@
--- lua/plugins/presence.lua
 local home = vim.loop.os_homedir()
 
 return {
@@ -10,7 +9,7 @@ return {
         workspace_text = function(filename)
           local path = vim.fn.expand("%:p")
           if path:match("^" .. home .. "/%.config/nvim/") then
-            return "Editing Neovim config"
+            return "ricing"
           elseif path:match("^" .. home .. "/programming/nyp/y2s1/full_stack_dev/project/initiate%-platform") 
               or path:match("^" .. home .. "/programming/nyp/y2s1/full_stack_dev/project/initiate%-backend") then
             return "Initiate!"

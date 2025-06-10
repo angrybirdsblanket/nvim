@@ -1,6 +1,7 @@
 require("ivan.remaps")
 require("ivan.set")
 require("ivan.file_association")
+require("ivan.commands")
 require("config.lazy")
 
 function get_branch()
