@@ -13,4 +13,3 @@ function get_branch()
   return branch
 end
 
-print(get_branch())
